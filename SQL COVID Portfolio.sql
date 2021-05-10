@@ -1,10 +1,11 @@
--- En este proyecto hare una exploracion de datos y la tematica sera el Covid.
+-- En este proyecto hare una exploracion de datos. 
 -- Dataset descargado en "https://ourworldindata.org/covid-deaths"
 
--- Para visualizar las muertes causadas por Covid:
--- Notese la aclaracion "Not null", esto se debe a que este dataset
+
+-- Primero visualizaremos las personas que murieron por COVID:
+-- (Notese la aclaracion "Not null", esto se debe a que este dataset
 -- contiene datos tanto de paises como de continentes, para discriminar estos dos,
--- le avisamos a SQL que unicamente trabajaremos con los no nulos (o paises).
+-- le avisamos a SQL que unicamente trabajaremos con los no nulos (o paises)).
 
 select * 
 from PortfolioProject..CovidDeaths
@@ -27,7 +28,7 @@ Where continent is not NULL
 order by 1,2
 
 -- Veamos el total de casos vs el total de muertos
--- Arrojar· la probabilidad de morir si contraes el virus en tu paÌs:
+-- Arrojar√° la probabilidad de morir si contraes el virus en tu pa√≠s:
 
 Select Location, Date, total_cases, total_deaths, (total_deaths/total_cases)*100 as DeathPercentage
 from PortfolioProject..CovidDeaths
@@ -36,7 +37,7 @@ and location like '%Argentina%'
 order by 1,2
 
 -- Total de casos vs poblacion 
--- Arrojar· el porcentaje de casos que se contagiaron de Covid:
+-- Arrojar√° el porcentaje de casos que se contagiaron de Covid:
 
 Select Location, Date, total_cases, population, (total_cases/population)*100 as CasesPercentage
 from PortfolioProject..CovidDeaths

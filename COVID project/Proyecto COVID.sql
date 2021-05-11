@@ -1,7 +1,7 @@
 -- En este proyecto hare una exploracion de datos. 
 -- Dataset descargado en "https://ourworldindata.org/covid-deaths"
 
-
+-- Funciones empleadas: Joins, CTE (expresiones comunes de tabla), Tablas temporales, Funciones de Windows, Funcion de agregacion, Vistas, Convertir tipos de datos.
 -- Primero visualizaremos las personas que murieron por COVID:
 -- (Notese la aclaracion "Not null", esto se debe a que este dataset
 -- contiene datos tanto de paises como de continentes, para discriminar estos dos,

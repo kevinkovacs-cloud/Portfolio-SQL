@@ -116,7 +116,7 @@ Select *, (RollingPeopleVaccinated/Population)*100
 From PopvsVac
 
 
-
+-- Ahora creamos una tabla temporal para realizar calculos de la consulta anterior:
 
 DROP Table if exists #PercentPopulationVaccinated
 Create Table #PercentPopulationVaccinated
@@ -146,7 +146,7 @@ From #PercentPopulationVaccinated
 
 
 
--- Creamos una visualizacion para guardar los datos, para posterior visualizacion:
+-- Creamos una Vista para guardar los datos, para posterior visualizacion:
 
 Create View PercentPopulationVaccinated as
 Select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations

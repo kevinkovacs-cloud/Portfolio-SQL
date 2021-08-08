@@ -22,10 +22,7 @@ para un mejor analisis. En este caso, de nuevos casos.
 * Population_density: Es un dato tambien denominado Poblacion Relativa, se refiere al numero promedio de habitantes del país,
 en relacion a una unidad de superficie del territorio donde se encuentra dicho país.
 
-## Futuro del proyecto
 
-_Mi vision sobre el futuro del proyecto es compartir un analisis estadistico en una carpeta llamada "Estadistica con Python" que adjuntare
-en este mismo README._
 
 
 

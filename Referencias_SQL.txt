@@ -1,0 +1,420 @@
+/* ********************************************
+************* SQL HOJA DE REFERENCIAS *********
+******************************************** */
+
+
+/* *************** OPERADORES *************** */
+
+
+=			--IGUAL
+<>			--NO ES IGUAL: EN ALGUNAS VERSIONES SE ESCRIBE !=
+>			--MAYOR QUE
+<			--MENOR QUE
+>=			--MAYOR O IGUAL QUE
+<=			--MENOR O IGUAL QUE
+BETWEEN		--ENTRE UN RANGO. ADEMAS SE PUEDE USAR: 
+			--NOT BETWEEN
+			--BETWEEN 'un' and 'perro'
+LIKE		--Busca por un patron. % es un comodin (wildcard). 
+			--ADEMAS SE PUEDE USAR NOT LIKE
+IN			--ESPECIFICAR POSIBLES VALORES EN COLUMNA
+
+
+
+/* ********** FUNCIONES AGREGADAS ********** */
+
+--Mas comunes:
+
+AVG()		--Promedio
+COUNT()		--Cuenta el numero de filas
+FIRST()		--Devuelve el primer valor
+LAST()		--Devuevle el ultimo valor
+MAX()		--Maximo valor
+MIN()		--Minimo valor
+SUM()		--Suma
+
+-- Otros ejemplos:
+datetime()	--Actual fecha
+isnull()	--Si una columna o variable es nula le dara un valor especificado.
+
+
+
+/* ***************** TABLAS **************** */
+/*
+TABLE 	
+Create - Crea tablas
+Alter - Modificas la tabla (ejemplo: agregar o quitar columnas)
+Truncate - Remover los registros de una tabla.
+Drop - Eliminar tablas o columnas.
+*/
+
+
+/* *********** CREAR Y BORRAR *********** */
+
+--CREAR TABLAS:
+
+	create table dbo.NombreTabla(
+		NombreCampo tipodedato not null identity(1,1),
+		NombreCampo tipodedato null
+	);
+
+	
+--CREAR COLUMNAS
+	alter table dbo.NombreTabla add NombreColumna tipodedato null/not null
+
+
+--ACTUALIZAR TABLA
+	alter table <schema>.<NombreTabla>
+
+--ACTUALIZAR COLUMNA
+	alter table <schema>.<NombreTabla>
+	alter column <NombreColumna> Tipodedato null | not null;
+
+
+--ELIMINAR TABLA
+	drop table dbo.NombreTabla
+
+--ELIMINAR COLUMNAS
+	alter table dbo.NombreTabla drop column NombreColumna
+
+
+--ELIMINAR VALORES DE TABLA
+	truncate table dbo.NombreTabla
+
+--AÑADIR PRIMARY KEY 
+
+--Ejemplo:
+	alter table dbo.NombreTabla
+	add constraint PK_Client_ClientID primary key(ClientId);
+
+--Cuando creas la tabla:
+	create table dbo.Personas(
+		PersonaId	int not null identity(1,1),
+		Titulo		varchar(5) null,
+		Primer nombre	varchar(5) not null,
+		Apellido	varchar(5) not null,
+		Primary key(PersonId)
+	);
+
+
+--AÑADIR FOREIGN KEY (extranjero)
+	alter table dbo.NombreTabla
+	add constraint NombreForeign foreign key(Column) references dbo.OtraTabla(PrimaryKeyColumnDeOtraTabla);
+
+	--Por ejemplo:
+	alter table dbo.Empleados
+	add constraint FK_Empleado_PersonaId foreign key(PersonaId) references dbo.Persona(PersonaId);
+        -- Cuando alguien añade un registro a la tabla de empleados, el registro con el mismo ID debe existir primero en la tabla de Personas.
+
+--DROP PRIMARY KEY
+
+
+
+/* ***************** SELECCIONAR/SELECT **************** */
+
+--Renombrar:
+	select	EmpleadosID as ID
+	from	dbo.Empleados
+	
+	select	TermDate as [Date of Termination]
+	from	dbo.Empleados
+
+
+--Renombrar usando otras tablas:
+	select	a.EmpleadoID
+	from	dbo.Empleados a
+
+
+--Los primeros # resultados:
+	select	top 2 * --Top 2 resultados
+	from	dbo.Persona
+
+
+--Seleccionar con unico valor:
+	select distinct(FechaInicio)
+	from	dbo.Empleado
+
+
+--FILTRAR RESULTADOS:
+
+	select	*
+	from	dbo.Empleado
+	where	FechaInicio > '1/1/2009'
+
+
+	--Multiples clausulas:
+	select	*
+	from	dbo.Empleado a inner Join dbo.Persona b
+	on		a.PersonaID = b.PersonaId
+	where	b.Titulo='Señor'
+	and		b.Apellido='Rojas'
+
+
+	--Multiples clausulas: 
+	select	*
+	from	dbo.Empleado a inner Join dbo.Persona b
+	on		a.PersonaID = b.PersonaId
+	where	b.Title='Señor'
+	or		b.LastName='Rojas'
+
+
+	--Clausula LIKE:
+	select	*
+	from	dbo.Empleado a inner Join dbo.Persona b
+	on		a.PersonaID = b.PersonaId
+	where	b.Apellido like '%n%'
+
+
+	--Clausula IN:
+	select	*
+	from	dbo.Empleado a
+	where	a.PersonaId in (1,3,6)
+
+	--IN-Subconsulta:
+	select	*
+	from	dbo.Empleado a
+	where	a.PersonaId in                 (	select PersonaId
+							from	dbo.Persona
+							where	PersonaId = 2)
+
+
+--Tipos de JOIN:
+
+	inner join
+	left outer join
+	right outer join
+	full outer join
+
+
+--Order By CLAUSULAS:
+	select		*
+	from		dbo.Empleado a inner Join dbo.Persona b
+	on			a.PersonaID = b.PersonaId
+	order by	a.EmpleadoId desc,
+				b.Apellido asc
+
+
+
+--FUNCIONES AGREGADAS (aggregate functions)
+
+--Este tipo de funciones son programadas para devolver un unico valor. 
+
+--Promedio - AVG()
+	select	avg(a.PersonaId) as PromedioPersonaId
+	from dbo.Persona a
+
+--Contar - COUNT()
+	select	count(*)
+	from	dbo.Persona
+
+--Suma - SUM()
+	select	sum(a.PersonaId) as SumaPersonaId
+	from	dbo.Persona a
+
+
+--Maximo valor - MAX()
+	select	max(a.PersonaId) as MaximoPersonaId
+	from	dbo.Persona a
+
+--Minimo valor - MIN()
+	select	min(a.PersonaId) as MinimoPersonaId
+	from dbo.Persona a
+
+
+
+--GROUP BY
+
+-- GROUP BY es usado en conjunto con funciones agregadas para agrupar los resultados en una o mas columnas:
+-- Ejemplo:
+
+	select		b.EmpleadoId,
+				count(*) as NumeroContador
+	from		dbo.Persona a
+	inner join	dbo.Empleado b on a.PersonaId = b.PersonaId
+	group by	b.EmpleadoId
+
+
+--Ejemplo un poco mas extenso:
+
+	select			a.PersonaId,
+					a.Nombre,
+					a.Apellido,
+					b.EmpleadoId,
+					isnull(c.NumeroContador, 0) as NumeroContador
+	from			dbo.Persona a
+	inner join		dbo.Empleado b on a.PersonaId = b.PersonaId
+	left outer join		(	select		b.EmpleadoId,
+										count(*) as NumeroContador
+							from		dbo.Persona a
+							inner join	dbo.Empleado b on a.PersonaId = b.PersonaId
+							group by	b.EmpleadoId c on b.EmpleadoId = c.EmpleadoId
+
+
+
+/* ***************************************** */
+/* ****************** BASURA *************** */
+/* ***************************************** */
+
+/*
+Crear - CREATE e INSERT. Usar nombres de tabla, de columna y tipos de datos (datatypes).
+Recuperar - SELECT. Se usa FROM
+Actualizar - UPDATE. Usa SET y WHERE 
+Eliminar - DELETE. Usa FROM y WHERE
+*/
+
+
+
+/* ***************** INSERT **************** */
+
+--Los valores ingresados deben coincidir con el tipo de datos que previamente se le asigno a la columna.
+
+--SIN NOMBRE DE COLUMNA:
+--Cuando no se especifica el nombre de la columna, se hara de la siguiente manera:
+
+insert into dbo.Email values('enzo.perez@hotmail.com', 6, 1);
+
+
+--CON NOMBRES DE COLUMNA: 
+insert into dbo.Email(EmailDireccion, EmpleadoId, TipoEntidadId)
+values('enzo.perez@hotmail.com', 6, 1);
+
+
+--UTILIZANDO LA FUNCION SELECT:
+--Busca el valor en la otra tabla y lo ingresa en la que queremos.
+insert into dbo.EMail(EmailDireccion, EmpleadoId, TipoEntidadId)
+select		'jorge@yahoo.com',
+			4,
+			TipoEntidadId
+from		Entidad a
+inner join	TipoEntiedadID b on a.EntidadID = b.EntidadID
+where		a.NombreEntidad = 'Email'
+and			b.TipoNombreEntidad = 'Personal'
+
+
+
+/* ***************** ACTUALIZAR **************** */
+
+--Si no utilizamos WHERE, toda la columna sera modificada.
+
+-- Ejemplo de esto: Vamos a actualizar todas las fechas con la actual:
+update	dbo.Persona
+set		CreateDate = getdate()
+
+
+--Cuando no queremos que el cambio sea global:
+update	dbo.Persona
+set		CreateDate = '2/1/2014'
+where	PersonaId = 1
+
+--Utilizar otra tabla:
+update		dbo.Empleado
+set			CreateDate = a.CreateDate
+from		dbo.Persona a
+inner join	dbo.Empleado b on a.PersonaId = b.PersonaId
+
+
+/* ***************** ELIMINAR/DELETE **************** */
+
+
+--De nuevo, si no utilizamos Where, eliminara toda la columna:
+
+	delete
+	from	NombreTabla
+	where	NombreTabla.NombreColumna = ValorFiltrado
+
+--Eliminacion del tipo "soft" (suave): Permanecera en una nueva columna
+
+	update	dbo.Persona
+	set		IsDeleted = 1
+	where	PersonaId in (10,11,12)
+
+
+/* **************** SUBQUERY/SUBCONSULTAS *************** */
+
+--Se utilizan parentesis.
+--Subquery incluye SELECT y FROM.
+--Pueden incluir WHERE o GROUP BY.
+--Puede incluir ORDER BY solo cuando hay una clausula (top) primero.
+--Utilizando en SELECT por ejemplo:
+
+
+	--Me devolvera un valor singular:
+
+		select	*,
+				(	select	count(*)
+					from	dbo.Empleado) as NumeroTotalEmpleados
+		from dbo.Persona
+
+
+	-- Especificando WHERE:
+
+		select	a.*,
+				(	select	FechaEmpleo
+					from	dbo.Empleado
+					where	PersonaId = a.PersonaId) as FechaEmpleo
+		from	dbo.Persona a
+
+
+	--Otro ejemplo en el que se pudo haber usado JOIN:
+
+		select	*
+		from	dbo.Persona a
+		where	a.PersonaId in	(	select	PersonaId
+									from	dbo.Empleado)
+
+		--Devolvera un unico valor:
+		select	*
+		from	dbo.Empleado a
+		where	a.personaId = (	select	PersonaId
+								from	dbo.persona
+								where	Apellido = 'Diaz')
+
+
+/* ********************************************
+*************** PROGRAMACION ***************
+******************************************** */
+
+/* *************** VARIABLES *************** */
+
+/* DECLARACIONES ********** */
+
+--Declarar una variable, asignarle el tipo:
+
+	declare	@Nombre          	varchar(50),
+			@Apellido	varchar(50),
+			@Titulo		varchar(50)
+
+
+--set para asignarle valor a una variable:
+
+	set	@Nombre = 'Daniel';
+	set	@Nombre = 'Jorge';
+	set @Titulo = 'Señor';
+
+
+/* OUTPUT ********** */
+
+--Seleccionar palabras clave:
+
+	select	@Nombre as Nombre,
+			@Apellido as Apellido,
+			@Titulo as Titulo;
+
+--Imprimir (print)
+	print	@Nombre;
+	print	@Apellido;
+	print	@Titulo;
+
+
+/* ************* "FLOW CONTROL" ************** */
+
+/* If/Else ********** */
+	declare	@ConsultaId	int = null;
+
+	set	@ConsultaId = 1;
+
+	if(@ConsultaId > 0)
+		print 'Es mayor que cero';
+	else
+		print 'Es cero o nulo';
+
